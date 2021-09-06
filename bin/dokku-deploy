@@ -61,6 +61,12 @@ if [ "$COMMAND" = "review-apps:create" ]; then
   ssh "$ssh_remote" -- apps:clone --skip-deploy --ignore-existing "$app_name" "$REVIEW_APP_NAME"
 fi
 
+if [ -n "$ENV" ]; then
+  log-info "Ensuring app '${REVIEW_APP_NAME:-$app_name}}' has the correct environment variables"
+  ENVS=$(echo $(echo $ENV))
+  ssh "$ssh_remote" -- config:set ${REVIEW_APP_NAME:-$app_name} ${ENVS}
+fi
+
 log-info "Pushing to Dokku Host"
 
 if [ -n "$REVIEW_APP_NAME" ] && [ "$app_name" != "$REVIEW_APP_NAME" ]; then
